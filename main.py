@@ -3,7 +3,7 @@ import telebot
 import pytgpt.phind
 
 # ضع توكن البوت هنا
-TOKEN = '7218686976:AAH3doF67rbhtGGEbiIVn_XgxdYPcTxE5uI'
+TOKEN = '6186196925:AAEbicH-n4pgwTcgqQy_rkIYa43iFwQWseA'
 
 # إنشاء بوت Telegram
 bot = telebot.TeleBot(TOKEN)
