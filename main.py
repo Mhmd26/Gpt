@@ -3,7 +3,7 @@ import json
 from pyrogram import Client, filters
 
 # ضع توكن البوت هنا
-API_TOKEN = "YOUR_API_TOKEN"
+API_TOKEN = "7218686976:AAH3doF67rbhtGGEbiIVn_XgxdYPcTxE5uI"
 
 url = 'https://us-central1-chat-for-chatgpt.cloudfunctions.net/basicUserRequestBeta'
 
