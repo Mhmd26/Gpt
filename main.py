@@ -1,50 +1,25 @@
-import requests
-import json
-from pyrogram import Client, filters
+import os
+import telebot
+import pytgpt.phind
 
 # ضع توكن البوت هنا
-API_TOKEN = "7218686976:AAH3doF67rbhtGGEbiIVn_XgxdYPcTxE5uI"
+TOKEN = '7218686976:AAH3doF67rbhtGGEbiIVn_XgxdYPcTxE5uI'
 
-url = 'https://us-central1-chat-for-chatgpt.cloudfunctions.net/basicUserRequestBeta'
+# إنشاء بوت Telegram
+bot = telebot.TeleBot(TOKEN)
 
-def gpt(text) -> str:
-    headers = {
-        'Host': 'us-central1-chat-for-chatgpt.cloudfunctions.net',
-        'Connection': 'keep-alive',
-        'If-None-Match': 'W/"1c3-Up2QpuBs2+QUjJl/C9nteIBUa00"',
-        'Accept': '*/*',
-        'User-Agent': 'com.tappz.aichat/1.2.2 iPhone/15.6.1 hw/iPhone8_2',
-        'Content-Type': 'application/json',
-        'Accept-Language': 'en-GB,en;q=0.9'
-    }
+# إعداد GPT
+gpt_bot = pytgpt.phind.PHIND()
 
-    data = {
-        'data': {
-            'message': text,
-        }
-    }
+def gpt(message):
+    return gpt_bot.chat(f'{message}')
 
-    response = requests.post(url, headers=headers, data=json.dumps(data))
-    try:
-        result = response.json()["result"]["choices"][0]["text"]
-        return result
-    except (KeyError, json.JSONDecodeError):
-        return "حدث خطأ أثناء معالجة الطلب."
+@bot.message_handler(content_types=['text'])
+def gptMessage(message):
+    if message.text.startswith('/Gpt'):
+        question = message.text[4:]  # استخرج السؤال بعد الأمر /Gpt
+        resp = gpt(question)
+        bot.send_message(message.chat.id, f'Gpt : {resp}', parse_mode='HTML')
 
-def reply_gpt(client, message):
-    text = message.text.split("/gpt ", 1)[1]  # استخدام 1 لتجنب تقسيم النص بالكامل
-    reply_text = gpt(text)
-    chat_id = message.chat.id
-    message_id = message.reply_to_message.message_id if message.reply_to_message else None
-    client.send_message(chat_id=chat_id, text=reply_text + "\n\n\n تم استخدام أحدث إصدار من الذكاء الاصطناعي 3.5 turbo\n شكرا افيونا @Q_XUQ", reply_to_message_id=message_id)
-
-@app.on_message(filters.command("gpt"))
-def reply(client, message):
-    message.reply_text("تم استلام سؤالك، يرجى الانتظار حتى يتم الرد عليك...")
-    reply_gpt(client, message)
-
-# تشغيل البوت
-if __name__ == "__main__":
-    app = Client("my_bot", bot_token=API_TOKEN)
-    app.run()
-  
+# بدء الاستماع للرسائل
+bot.infinity_polling()
